@@ -1,0 +1,22 @@
+#/usr/bin/gnuplot
+
+reset
+set terminal png size 6400,3600 font "Helvetica,50"
+
+set xlabel "Distance (m)"
+set xrange [0:300]
+
+set ylabel "Depth (m)"
+set yrange [300:0]
+
+set zrange [0:1400]
+
+set title "Acoustic Propogation - Heatmap"
+#set key reverse Left outside
+set key off
+set grid
+
+#set style increment default
+set view map scale 1
+
+plot "./heatmap/HeatmapData.txt" using 1:2:3 with image
