@@ -34,7 +34,8 @@ void main(int argc, char ** argv)
 	//process to recieve data and write to text files
 	int finalLength;
 	if(world_rank < printJobs){
-		for(int i = 0; i < (world_size-1)/printJobs; i++){
+		int jobsToReceive = (world_size-printJobs)/printJobs;
+		for(int i = 0; i < jobsToReceive; i++){
 			double * list = malloc(sizeof(double) * MaxMessage);
 			MPI_Status status;
 			//printf("receiving");
@@ -53,8 +54,9 @@ void main(int argc, char ** argv)
 			}
 			fclose(write);
 			free(list);
-			//printf("printed %3i, %i of %i\n", status.MPI_SOURCE, i+1, world_size-1);
+			printf("printed %3i, %i of %i\n", status.MPI_SOURCE, i+1, jobsToReceive);
 		}
+		MPI_Finalize();
 	}
 	//processes to generate data
 	else{
@@ -66,9 +68,8 @@ void main(int argc, char ** argv)
 		//printf("sending %3i\n", world_rank);
 		MPI_Send(list, finalLength, MPI_DOUBLE, world_rank%printJobs, 0, MPI_COMM_WORLD);
 		free(list);
+		MPI_Finalize();
 	}
-
-	MPI_Finalize();
 }
 
 
@@ -99,16 +100,6 @@ double * createPath(double startAngle, int * final){
 	while (depths[layer] < depth)
 		layer++;
 	
-	/*
-	//create unique write file name
-	char buf[0x100];
-	//snprintf(buf, sizeof(buf), "./outputfiles/%in (#%03i) angle:%f.txt", world_size, world_rank, startAngle);
-	snprintf(buf, sizeof(buf), "./outputfiles/%03i.txt", world_rank);
-
-	//create write file
-	FILE* write = fopen(buf, "w");
-	*/
-
 	double * results = malloc(sizeof(double) * MaxMessage);
 
 	//loop

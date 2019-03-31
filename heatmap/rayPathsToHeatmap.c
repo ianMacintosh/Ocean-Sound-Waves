@@ -15,7 +15,7 @@ int main(){
 	for(int i = 0; i < divisions; i++)
 		*(table + i) = (int*)malloc(divisions * sizeof(int));
 
-	for(int i = 10; i < 250; i++){
+	for(int i = 1; i < 250; i++){
 		char buf[100];
 		sprintf(buf, "./outputfiles/%03d.txt", i);
 
