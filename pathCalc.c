@@ -10,6 +10,7 @@
 #define MaxMessage 50000
 #define maxAngle 9.4
 #define minAngle -maxAngle
+#define printJobs 1
 
 int getFileLength();
 void populateArrays(double*, double*);
@@ -32,8 +33,8 @@ void main(int argc, char ** argv)
 
 	//process to recieve data and write to text files
 	int finalLength;
-	if(world_rank <= 9){
-		for(int i = 0; i < (world_size-1)/10; i++){
+	if(world_rank < printJobs){
+		for(int i = 0; i < (world_size-1)/printJobs; i++){
 			double * list = malloc(sizeof(double) * MaxMessage);
 			MPI_Status status;
 			//printf("receiving");
@@ -57,13 +58,13 @@ void main(int argc, char ** argv)
 	}
 	//processes to generate data
 	else{
-		double divisionSize = (double)(maxAngle - minAngle) / (world_size - 10 - 1);
-		double startingAngle = minAngle + (world_rank - 10) * divisionSize;//space different processes for different start angles from minAngle to maxAngle degrees
+		double divisionSize = (double)(maxAngle - minAngle) / (world_size - printJobs - 1);
+		double startingAngle = minAngle + (world_rank - printJobs) * divisionSize;//space different processes for different start angles from minAngle to maxAngle degrees
 
 		double * list = createPath(startingAngle, &finalLength);
 
 		//printf("sending %3i\n", world_rank);
-		MPI_Send(list, finalLength, MPI_DOUBLE, world_rank%10, 0, MPI_COMM_WORLD);
+		MPI_Send(list, finalLength, MPI_DOUBLE, world_rank%printJobs, 0, MPI_COMM_WORLD);
 		free(list);
 	}
 
