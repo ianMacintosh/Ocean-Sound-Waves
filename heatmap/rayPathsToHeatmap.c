@@ -28,14 +28,16 @@ int main(){
 	}
 
 	output = fopen("heatmap/HeatmapData.txt", "w");
-	int max = 0, current = 0;
+	//int max = 0, current = 0;
 	for(int i = 0; i < divisions; i++){
 		for(int j = 0; j < divisions; j++){
 			current = table[i][j];
+			/*
 			if(current > max){
 				max = current;
 				printf("%i\t%i\t%i\n", i, j, current);
 			}
+			*/
 			fprintf(output, "%i\t%i\t%i\n", i, j, current);
 		}
 		fprintf(output, "\n");
