@@ -2,7 +2,7 @@ build:
 	mpicc -lm ./pathCalc.c -o PathCalc
 
 run:
-	mpiexec -n 250 ./PathCalc
+	mpiexec -n 10 ./PathCalc
 
 multi:
 	mpirun -n 300 -hosts host,10.69.106.25,10.69.106.27 ./PathCalc
