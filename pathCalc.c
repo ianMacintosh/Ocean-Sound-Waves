@@ -10,7 +10,7 @@
 #define MaxMessage 50000
 #define maxAngle 9.4
 #define minAngle -maxAngle
-#define printJobs 10
+#define printJobs 1
 
 int getFileLength();
 void populateArrays(double*, double*);
@@ -38,7 +38,7 @@ void main(int argc, char ** argv)
 		for(int i = 0; i < jobsToReceive; i++){
 			double * list = malloc(sizeof(double) * MaxMessage);
 			MPI_Status status;
-			//printf("receiving");
+			printf("receiving");
 			MPI_Recv(list, MaxMessage, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
 			//printf("\treceived\t");
 			MPI_Get_count(&status, MPI_DOUBLE, &finalLength);
