@@ -3,13 +3,15 @@
 reset
 set terminal png size 6400,3600 font "Helvetica,50"
 
-set xlabel "Distance (m)"
-set xrange [0:300]
+xScaler = 1.0/3
+yScaler = 2600/600
+set xlabel "Distance (km)"
+set xrange [0:600*xScaler]
 
 set ylabel "Depth (m)"
-set yrange [300:0]
+set yrange [600*yScaler:0]
 
-set zrange [0:1400]
+set cbrange [0:60]
 
 set title "Acoustic Propogation - Heatmap"
 #set key reverse Left outside
@@ -19,4 +21,4 @@ set grid
 #set style increment default
 set view map scale 1
 
-plot "./heatmap/HeatmapData.txt" using 1:2:3 with image
+plot "./heatmap/HeatmapData.txt" using ($1*xScaler):($2*yScaler):3 with image

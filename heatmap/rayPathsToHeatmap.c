@@ -4,7 +4,7 @@
 
 #define width 200000
 #define height 2605
-#define divisions 300
+#define divisions 600
 
 
 int main(){
@@ -15,7 +15,7 @@ int main(){
 	for(int i = 0; i < divisions; i++)
 		*(table + i) = (int*)malloc(divisions * sizeof(int));
 
-	for(int i = 1; i < 250; i++){
+	for(int i = 10; i < 250; i++){
 		char buf[100];
 		sprintf(buf, "./outputfiles/%03d.txt", i);
 
@@ -28,18 +28,19 @@ int main(){
 	}
 
 	output = fopen("heatmap/HeatmapData.txt", "w");
-	//int max = 0, current = 0;
+	int current = 0;
 	for(int i = 0; i < divisions; i++){
 		for(int j = 0; j < divisions; j++){
 			current = table[i][j];
-			/*
-			if(current > max){
-				max = current;
-				printf("%i\t%i\t%i\n", i, j, current);
-			}
-			*/
+			
+			//if(current > max){
+			//	max = current;
+			//	//printf("%i\t%i\t%i\n", i, j, current);
+			//}
+			
 			fprintf(output, "%i\t%i\t%i\n", i, j, current);
 		}
+		//printf("%i: %i\n", i, max);
 		fprintf(output, "\n");
 	}
 	fclose(output);

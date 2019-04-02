@@ -3,8 +3,8 @@
 reset
 set terminal png size 6400,3600 font "Helvetica,50"
 
-set xlabel "Distance (m)"
-set xrange [0:200000]
+set xlabel "Distance (km)"
+set xrange [0:200]
 
 set ylabel "Depth (m)"
 set yrange [2600:0]
@@ -17,4 +17,4 @@ set grid
 set style data points
 
 filename(n) = sprintf("./outputfiles/%03d.txt", n)
-plot for [i=1:249] filename(i) using 1:2
+plot for [i=1:249] filename(i) using ($1/100):2

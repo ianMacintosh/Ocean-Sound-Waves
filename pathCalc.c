@@ -10,7 +10,7 @@
 #define MaxMessage 50000
 #define maxAngle 9.4
 #define minAngle -maxAngle
-#define printJobs 1
+#define printJobs 10
 
 int getFileLength();
 void populateArrays(double*, double*);
@@ -56,7 +56,6 @@ void main(int argc, char ** argv)
 			free(list);
 			printf("printed %3i, %i of %i\n", status.MPI_SOURCE, i+1, jobsToReceive);
 		}
-		MPI_Finalize();
 	}
 	//processes to generate data
 	else{
@@ -68,8 +67,8 @@ void main(int argc, char ** argv)
 		//printf("sending %3i\n", world_rank);
 		MPI_Send(list, finalLength, MPI_DOUBLE, world_rank%printJobs, 0, MPI_COMM_WORLD);
 		free(list);
-		MPI_Finalize();
 	}
+	MPI_Finalize();
 }
 
 
