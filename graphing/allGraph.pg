@@ -17,4 +17,4 @@ set grid
 set style data points
 
 filename(n) = sprintf("./outputfiles/%03d.txt", n)
-plot for [i=1:249] filename(i) using ($1/100):2
+plot for [i=1:1000] filename(i) using ($1/1000):2

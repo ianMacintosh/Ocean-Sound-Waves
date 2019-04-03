@@ -10,11 +10,13 @@
 #define MaxMessage 50000
 #define maxAngle 9.4
 #define minAngle -maxAngle
-#define printJobs 10
+#define printJobs 8
 
+int getNodeCount();
 int getFileLength();
 void populateArrays(double*, double*);
 double * createPath(double, int*);
+int jobsToPrint(int, int, int);
 
 int world_rank;
 
@@ -33,8 +35,10 @@ void main(int argc, char ** argv)
 
 	//process to recieve data and write to text files
 	int finalLength;
-	if(world_rank < printJobs){
-		int jobsToReceive = (world_size-printJobs)/printJobs;
+	int machineCount = getNodeCount();
+	if(world_rank/machineCount < printJobs && world_rank % machineCount == 0){
+		int jobsToReceive = jobsToPrint(world_rank, machineCount, world_size);
+		printf("%03i is printer, looking for %03i jobs\n", world_rank, jobsToReceive);
 		for(int i = 0; i < jobsToReceive; i++){
 			double * list = malloc(sizeof(double) * MaxMessage);
 			MPI_Status status;
@@ -54,8 +58,10 @@ void main(int argc, char ** argv)
 			}
 			fclose(write);
 			free(list);
-			printf("printed %3i, %i of %i\n", status.MPI_SOURCE, i+1, jobsToReceive);
+			//printf("printed %3i, %i of %i\n", status.MPI_SOURCE, i+1, jobsToReceive);
+			printf("printer: %03i\tprocess: %03i\t%03i remaining\n", world_rank, status.MPI_SOURCE, jobsToReceive - i);
 		}
+		printf("COMPLETED %i\n", world_rank);
 	}
 	//processes to generate data
 	else{
@@ -65,12 +71,35 @@ void main(int argc, char ** argv)
 		double * list = createPath(startingAngle, &finalLength);
 
 		//printf("sending %3i\n", world_rank);
-		MPI_Send(list, finalLength, MPI_DOUBLE, world_rank%printJobs, 0, MPI_COMM_WORLD);
+		MPI_Send(list, finalLength, MPI_DOUBLE, (world_rank%printJobs) * machineCount, 0, MPI_COMM_WORLD);
 		free(list);
 	}
 	MPI_Finalize();
 }
 
+int jobsToPrint(int rank, int machines, int processes){
+	int jobs = 0;
+
+	for(int i = 0; i < processes; i++){
+		if(!(i/machines < printJobs && i % machines == 0))//this process value of i is not a printer
+ 			if((i%printJobs) * machines == rank)//this process value of i will be sent to this printer
+				jobs++;
+	}
+
+	return jobs;
+}
+
+int getNodeCount() {//return total number of machines maybe??
+	int rank, is_rank0, nodes;
+	MPI_Comm shmcomm;
+
+	MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, &shmcomm);
+	MPI_Comm_rank(shmcomm, &rank);
+	is_rank0 = (rank == 0) ? 1 : 0;
+	MPI_Allreduce(&is_rank0, &nodes, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+	MPI_Comm_free(&shmcomm);
+	return nodes;
+}
 
 double * createPath(double startAngle, int * final){
 	int length = 0;
