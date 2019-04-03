@@ -10,7 +10,11 @@
 #define MaxMessage 50000
 #define maxAngle 9.4
 #define minAngle -maxAngle
+<<<<<<< HEAD
 #define printJobs 8
+=======
+#define printJobs 1
+>>>>>>> c743dc750b56e4a78e5dd826b1d2b8fb651bbec5
 
 int getNodeCount();
 int getFileLength();
@@ -42,7 +46,7 @@ void main(int argc, char ** argv)
 		for(int i = 0; i < jobsToReceive; i++){
 			double * list = malloc(sizeof(double) * MaxMessage);
 			MPI_Status status;
-			//printf("receiving");
+			printf("receiving");
 			MPI_Recv(list, MaxMessage, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
 			//printf("\treceived\t");
 			MPI_Get_count(&status, MPI_DOUBLE, &finalLength);
