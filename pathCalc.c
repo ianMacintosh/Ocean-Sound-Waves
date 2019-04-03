@@ -10,11 +10,7 @@
 #define MaxMessage 50000
 #define maxAngle 9.4
 #define minAngle -maxAngle
-<<<<<<< HEAD
 #define printJobs 8
-=======
-#define printJobs 1
->>>>>>> c743dc750b56e4a78e5dd826b1d2b8fb651bbec5
 
 int getNodeCount();
 int getFileLength();
